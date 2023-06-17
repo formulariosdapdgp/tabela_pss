@@ -6,7 +6,22 @@ import tabula as tb
 import os
 from pdfminer.high_level import extract_text
 
-st.subheader("Gerador de tabela para PSS")
+#st.subheader("")
+
+st.markdown('''
+              <h4 style='text-align: center'> Gerador de tabela para PSS </h4>
+              <div style='background-color: lightgreen; font-weight: bold'>
+              <p style='text-align: center; font-weight: bold'>Antes de Gerar a tabela com as informações do PSS são necessárias as seguintes ações: </p>
+              <ol style='font-weight: bold'>
+                <li>Vá até a unidade 'C:' do seu computador e crie uma pasta chamada 'pss' (tudo minúsculo)</li>
+                <li>Para chegar até essa pasta, no Windows, abra o Explorador de Arquivos e digite na barra de endereços: c:\</li>
+                <li>Salve o arquivo .pdf gerado no CACOCONPSS na pasta que foi criada anteriormente</li>
+                <li>O arquivo .html contendo a tabela será salvo nessa mesma pasta após você clicar no botão abaixo</li>
+              </ol>
+              </div>
+              <br>
+              ''', unsafe_allow_html=True)
+
 
 def cabecalho_tabela():
   with open("tabela_pss.html", "w", encoding="utf-8") as pss:
@@ -148,8 +163,13 @@ def gerar_tabela_pss():
   # print("Arquivo gerado com sucesso! \n")
   # baixar_arquivos("tabela_pss.html")
       
-
-gerar_tab = st.button("GERAR TABELA")
+col_1, col_2, col_3 = st.columns([1,2,1])
+with col_1:
+  pass
+with col_2:
+  gerar_tab = st.button("CLIQUE AQUI PARA GERAR A TABELA")
+with col_3:
+  pass
 if gerar_tab:
-    gerar_tabela_pss()
+      gerar_tabela_pss()
     
