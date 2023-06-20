@@ -5,26 +5,38 @@ import pandas as pd
 import tabula as tb
 import os
 from pdfminer.high_level import extract_text
+from tkinter import filedialog
+import time
+
+     
+
+
+def tela_tk():
+  endereco = filedialog.askopenfilename()
+  print(endereco)
+
 
 #st.subheader("")
 
 st.markdown('''
-              <h4 style='text-align: center'> Gerador de tabela para PSS </h4>
+              <h4 style='text-align: center'> Gerador de tabela PSS </h4>
               <div style='background-color: lightgreen; font-weight: bold'>
               <p style='text-align: center; font-weight: bold'>Antes de Gerar a tabela com as informações do PSS são necessárias as seguintes ações: </p>
               <ol style='font-weight: bold'>
                 <li>Vá até a unidade 'C:' do seu computador e crie uma pasta chamada 'pss' (tudo minúsculo)</li>
                 <li>Para chegar até essa pasta, no Windows, abra o Explorador de Arquivos e digite na barra de endereços: c:\</li>
                 <li>Salve o arquivo .pdf gerado no CACOCONPSS na pasta que foi criada anteriormente</li>
+                <!--
                 <li>O arquivo .html contendo a tabela será salvo nessa mesma pasta após você clicar no botão abaixo</li>
+                -->
               </ol>
               </div>
               <br>
               ''', unsafe_allow_html=True)
 
 
-def cabecalho_tabela():
-  with open("tabela_pss.html", "w", encoding="utf-8") as pss:
+def cabecalho_tabela(nome_pdf):
+  with open(f"{nome_pdf}.html", "w", encoding="utf-8") as pss:
     pss.write(f'''
           <table border="1" cellpadding="0" cellspacing="0">
             <thead>
@@ -64,8 +76,8 @@ def cabecalho_tabela():
             <tbody border="1" cellpadding="0" cellspacing="0">''')
     
 
-def corpo_tabela(dados_pss, ano):
-  with open("tabela_pss.html", "a") as pss:
+def corpo_tabela(dados_pss, ano, nome_pdf):
+  with open(f"{nome_pdf}.html", "a") as pss:
     pss.write(f'''
                   <tr>
                     <td style="text-align: center; padding: 5px;">&nbsp;{ano}&nbsp;</td>
@@ -84,14 +96,25 @@ def corpo_tabela(dados_pss, ano):
                     <td style="text-align: center; padding: 5px;">&nbsp;{dados_pss[12][2]}&nbsp;</td>
                   </tr>''')
 
-def fechamento_tabela():
-  with open("tabela_pss.html", "a") as pss:
+def fechamento_tabela(nome_pdf):
+  with open(f"{nome_pdf}.html", "a") as pss:
     pss.write(f'''</tbody>
               </table>''')
 
 # Fazer download de arquvios
-def baixar_arquivos(nome_arq):
-  pass
+def baixar_arquivos(nome_do_arq):
+  
+      try:
+          with open(str(nome_do_arq), "rb") as file:
+              st.download_button(
+                  label="CLIQUE AQUI PARA GERAR E BAIXAR A TABELA",
+                  data=file,
+                  file_name=nome_do_arq,
+                  mime="text/html")
+      except:
+          st.error("ARQUIVO NÃO LOCALIZADO! REPITA O PROCESSO.")
+ 
+      os.remove(nome_do_arq)
 
 # limpar console
 def limpa_tela():
@@ -105,12 +128,14 @@ def captura_ano(texto):
   return ano
 
 
-def gerar_tabela_pss():
+def gerar_tabela_pss(nome_arq):
   # carregar o arquivo
   
+  nome_do_arquivo = nome_arq
   os.chdir('/pss') 
   caminho = os.getcwd()
-  arquivo = f'{caminho}/pss.pdf'
+  arquivo = f'{caminho}/{nome_do_arquivo}'
+  #print(caminho)
 
   
   # capturando caminho do arquivo
@@ -122,9 +147,10 @@ def gerar_tabela_pss():
   ano = ano_arquivo
   
   # Gerando cabeçalho do arquivo
-  cabecalho_tabela()
+  cabecalho_tabela(nome_arq[:-4])
   # percorrendo tabelas
   for ind, tab in enumerate(tabela):
+
     # retirando coluna desnecessária
     tabela[ind] = tabela[ind].drop(columns=["Unnamed: 0"])
 
@@ -148,7 +174,7 @@ def gerar_tabela_pss():
         dados_pss.append([tabela[ind]['MES'][row].replace("_ ","").replace(" :","").replace(":",""), tabela[ind]["PSS APURADO"][row], tabela[ind]["REMUNERACAO PSS"][row]])
 
     # inserindo informações na tabela
-    corpo_tabela(dados_pss, ano)
+    corpo_tabela(dados_pss, ano, nome_arq[:-4])
 
     # incrementando o ano
     ano = int(ano) + 1
@@ -156,20 +182,28 @@ def gerar_tabela_pss():
 
 
   # verificando se todos os arquivos já foram processados, caso sim encerra o programa.
-  fechamento_tabela()
-  with open("tabela_pss.html", "r") as tbl:
-    tbl_pss = tbl.read().strip()
-  st.markdown(tbl_pss, unsafe_allow_html=True)
-  # print("Arquivo gerado com sucesso! \n")
-  # baixar_arquivos("tabela_pss.html")
+  fechamento_tabela(nome_arq[:-4])
+  baixar_arquivos(f'{nome_arq[:-4]}.html')
+  # with open("tabela_pss.html", "r") as tbl:
+  #   tbl_pss = tbl.read().strip()
+  # st.markdown(tbl_pss, unsafe_allow_html=True)
+  
+
+uploaded_file = st.file_uploader("Selecione o arquivo na pasta 'c:\pss': ")
+if uploaded_file is not None:
+  # col_1, col_2, col_3 = st.columns([1,2,1])
+  # with col_1:
+  #   pass
+  # with col_2:
+  #   gerar_tab = st.button("CLIQUE AQUI PARA GERAR A TABELA")
+  # with col_3:
+  #   pass
+  # if gerar_tab:
+  gerar_tabela_pss(uploaded_file.name)
       
-col_1, col_2, col_3 = st.columns([1,2,1])
-with col_1:
-  pass
-with col_2:
-  gerar_tab = st.button("CLIQUE AQUI PARA GERAR A TABELA")
-with col_3:
-  pass
-if gerar_tab:
-      gerar_tabela_pss()
+
+
+
+
+
     
