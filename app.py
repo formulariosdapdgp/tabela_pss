@@ -5,18 +5,7 @@ import pandas as pd
 import tabula as tb
 import os
 from pdfminer.high_level import extract_text
-from tkinter import filedialog
-import time
 
-     
-
-
-def tela_tk():
-  endereco = filedialog.askopenfilename()
-  print(endereco)
-
-
-#st.subheader("")
 
 st.markdown('''
               <h4 style='text-align: center'> Gerador de tabela PSS </h4>
