@@ -1,7 +1,5 @@
 import streamlit as st
 import os
-import numpy as np  
-import pandas as pd
 import tabula as tb
 import os
 from pdfminer.high_level import extract_text
@@ -9,20 +7,13 @@ from pdfminer.high_level import extract_text
 
 st.markdown('''
               <h4 style='text-align: center'> Gerador de tabela PSS </h4>
-              <div style='background-color: lightgreen; font-weight: bold'>
-              <p style='text-align: center; font-weight: bold'>Antes de Gerar a tabela com as informações do PSS são necessárias as seguintes ações: </p>
-              <ol style='font-weight: bold'>
-                <li>Vá até a unidade 'C:' do seu computador e crie uma pasta chamada 'pss' (tudo minúsculo)</li>
-                <li>Para chegar até essa pasta, no Windows, abra o Explorador de Arquivos e digite na barra de endereços: c:\</li>
-                <li>Salve o arquivo .pdf gerado no CACOCONPSS na pasta que foi criada anteriormente</li>
-                <!--
-                <li>O arquivo .html contendo a tabela será salvo nessa mesma pasta após você clicar no botão abaixo</li>
-                -->
-              </ol>
-              </div>
-              <br>
+              <p style='text-align: center; background-color: lightgreen; font-weight: bold'>
+                Selecione ou arraste o arquivo PDF gerado no CACOCONPSS:  
+              </p>
               ''', unsafe_allow_html=True)
 
+def limpa_tela():
+   return
 
 def cabecalho_tabela(nome_pdf):
   with open(f"{nome_pdf}.html", "w", encoding="utf-8") as pss:
@@ -96,7 +87,7 @@ def baixar_arquivos(nome_do_arq):
       try:
           with open(str(nome_do_arq), "rb") as file:
               st.download_button(
-                  label="CLIQUE AQUI PARA GERAR E BAIXAR A TABELA",
+                  label="CLIQUE AQUI PARA BAIXAR A TABELA GERADA EM FORMATO HTML",
                   data=file,
                   file_name=nome_do_arq,
                   mime="text/html")
@@ -117,33 +108,14 @@ def captura_ano(texto):
   return ano
 
 
-def gerar_tabela_pss(nome_arq):
+def gerar_tabela_pss(nome_arq, arquivo_pdf):
+
   # carregar o arquivo
-  
-  nome_do_arquivo = nome_arq
-  if not os.path.exists('./pss'):
-    try:
-      os.mkdir('./pss')
-      st.write("Arquivo criado com sucesso!")
-    except:
-      st.error("Não foi possível criar o diretório")
-
-  # os.chdir('/pss') 
-  # caminho = os.getcwd()
-  # arquivo = f'{caminho}/{nome_do_arquivo}'
-  arquivo = f'pss/{nome_do_arquivo}'
-  #print(caminho)
-    
-
-  
-  # capturando caminho do arquivo
-  path = arquivo
-  tabela = tb.read_pdf(path, pages="all") # gerando uma lista com as tabelas
+  tabela = tb.read_pdf(arquivo_pdf, pages="all") # gerando uma lista com as tabelas
   # capturando ano do arquivo
-  texto_arquivo = extract_text(path)
+  texto_arquivo = extract_text(arquivo_pdf)
   ano_arquivo = captura_ano(texto_arquivo)
   ano = ano_arquivo
-  
   # Gerando cabeçalho do arquivo
   cabecalho_tabela(nome_arq[:-4])
   # percorrendo tabelas
@@ -177,35 +149,48 @@ def gerar_tabela_pss(nome_arq):
     # incrementando o ano
     ano = int(ano) + 1
 
-
-
-  # verificando se todos os arquivos já foram processados, caso sim encerra o programa.
+  # fechando a parte final do arquivo e fazendo download
   fechamento_tabela(nome_arq[:-4])
   baixar_arquivos(f'{nome_arq[:-4]}.html')
-  # with open("tabela_pss.html", "r") as tbl:
-  #   tbl_pss = tbl.read().strip()
-  # st.markdown(tbl_pss, unsafe_allow_html=True)
   
 
-uploaded_file = st.file_uploader("Selecione o arquivo na pasta 'c:\pss': ")
-
-
-if not os.path.exists('./pss'):
-   st.write("O diretório não existe!")
-else:
-   st.write("O diretório EXISTE")
-   
-# try:
-#   os.mkdir('./pss')
-#   st.write("Arquivo criado com sucesso!")
-# except:
-#   st.error("Não foi possível criar o diretório")
+# solicitando o carregamento do arquivo
+uploaded_file = st.file_uploader("")  
+if uploaded_file is not None:
+  gerar_tabela_pss(uploaded_file.name, uploaded_file)
   
-if uploaded_file is not None:  
-  gerar_tabela_pss(uploaded_file.name)
       
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# nome_do_arquivo = nome_arq
+  # if not os.path.exists('./pss'):
+  #   try:
+  #     os.mkdir('./pss')
+  #     st.write("Arquivo criado com sucesso!")
+  #   except:
+  #     st.error("Não foi possível criar o diretório")
+  # # os.chdir('/pss') 
+  # # caminho = os.getcwd()
+  # # arquivo = f'{caminho}/{nome_do_arquivo}'
+  # arquivo = f'pss/{nome_do_arquivo}'
+  # #print(caminho)
+  # # capturando caminho do arquivo
+  # path = arquivo
 
 
 
