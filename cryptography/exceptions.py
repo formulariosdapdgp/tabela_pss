@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import typing
 
-from hazmat.bindings._rust import exceptions as rust_exceptions
+import exceptions as rust_exceptions #from hazmat.bindings._rust 
 
 if typing.TYPE_CHECKING:
     from cryptography.hazmat.bindings._rust import openssl as rust_openssl
