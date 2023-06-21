@@ -101,7 +101,7 @@ def baixar_arquivos(nome_do_arq):
                   file_name=nome_do_arq,
                   mime="text/html")
       except:
-          st.error("ARQUIVO NÃO LOCALIZADO! REPITA O PROCESSO.")
+        st.error("ARQUIVO NÃO LOCALIZADO! REPITA O PROCESSO.")
  
       os.remove(nome_do_arq)
 
@@ -121,10 +121,17 @@ def gerar_tabela_pss(nome_arq):
   # carregar o arquivo
   
   nome_do_arquivo = nome_arq
+  if not os.path.exists('./pss'):
+    try:
+      os.mkdir('./pss')
+    except:
+      st.error("Não foi possível criar o diretório")
+
   os.chdir('/pss') 
   caminho = os.getcwd()
   arquivo = f'{caminho}/{nome_do_arquivo}'
   #print(caminho)
+    
 
   
   # capturando caminho do arquivo
