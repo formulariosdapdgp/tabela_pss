@@ -190,13 +190,13 @@ def gerar_tabela_pss(nome_arq):
 uploaded_file = st.file_uploader("Selecione o arquivo na pasta 'c:\pss': ")
 
 
-if not os.path.exists('./pss'):
-  try:
-    os.mkdir('./pss')
-    st.write("Arquivo criado com sucesso!")
-  except:
-    st.error("Não foi possível criar o diretório")
-   
+#if not os.path.exists('./pss'):
+try:
+  os.mkdir('./pss')
+  st.write("Arquivo criado com sucesso!")
+except:
+  st.error("Não foi possível criar o diretório")
+  
 if uploaded_file is not None:  
   gerar_tabela_pss(uploaded_file.name)
       
