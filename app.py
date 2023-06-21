@@ -124,12 +124,14 @@ def gerar_tabela_pss(nome_arq):
   if not os.path.exists('./pss'):
     try:
       os.mkdir('./pss')
+      st.write("Arquivo criado com sucesso!")
     except:
       st.error("Não foi possível criar o diretório")
 
-  os.chdir('/pss') 
-  caminho = os.getcwd()
-  arquivo = f'{caminho}/{nome_do_arquivo}'
+  # os.chdir('/pss') 
+  # caminho = os.getcwd()
+  # arquivo = f'{caminho}/{nome_do_arquivo}'
+  arquivo = f'pss/{nome_do_arquivo}'
   #print(caminho)
     
 
@@ -186,15 +188,16 @@ def gerar_tabela_pss(nome_arq):
   
 
 uploaded_file = st.file_uploader("Selecione o arquivo na pasta 'c:\pss': ")
-if uploaded_file is not None:
-  # col_1, col_2, col_3 = st.columns([1,2,1])
-  # with col_1:
-  #   pass
-  # with col_2:
-  #   gerar_tab = st.button("CLIQUE AQUI PARA GERAR A TABELA")
-  # with col_3:
-  #   pass
-  # if gerar_tab:
+
+
+if not os.path.exists('./pss'):
+  try:
+    os.mkdir('./pss')
+    st.write("Arquivo criado com sucesso!")
+  except:
+    st.error("Não foi possível criar o diretório")
+   
+if uploaded_file is not None:  
   gerar_tabela_pss(uploaded_file.name)
       
 
