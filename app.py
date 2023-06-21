@@ -155,7 +155,7 @@ def gerar_tabela_pss(nome_arq, arquivo_pdf):
   
 
 # solicitando o carregamento do arquivo
-uploaded_file = st.file_uploader("")  
+uploaded_file = st.file_uploader("Selecione ou arraste o arquivo PDF gerado no CACOCONPSS:", label_visibility=False)  
 if uploaded_file is not None:
   gerar_tabela_pss(uploaded_file.name, uploaded_file)
   
