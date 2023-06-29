@@ -1,1 +1,1 @@
-default-jre-17-jre-headless
+default-jre-17-headless
