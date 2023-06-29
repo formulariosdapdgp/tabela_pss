@@ -1,1 +1,1 @@
-default-jre-17-headless
+default-jre-headless:amd64
