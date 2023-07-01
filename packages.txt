@@ -1,1 +1,1 @@
-default-jre==17
+default-jre=17
