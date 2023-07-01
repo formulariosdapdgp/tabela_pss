@@ -1,1 +1,1 @@
-default-jre=1.8
+default-jre=1.8.0_351
